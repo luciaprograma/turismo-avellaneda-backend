@@ -1,0 +1,43 @@
+# Archivos de entorno y configuración sensible
+.env
+.env.backup
+.env.production
+auth.json
+Homestead.json
+Homestead.yaml
+
+# Carpeta de dependencias
+/vendor
+/node_modules
+
+# Logs y archivos temporales
+*.log
+/storage/*.log
+/storage/*.key
+/storage/pail
+*.tmp
+*.swp
+
+# Assets compilados y cache de frontend
+/public/build
+/public/hot
+/public/storage
+
+# Archivos de IDE / Sistema operativo
+.DS_Store
+/.idea
+/.vscode
+/.fleet
+/.zed
+Thumbs.db
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
+
+# Archivos de prueba / datos sensibles
+/Testing_Sheet.xlsx
+*.sql
+*.dump
+
+# Otros
+/public/storage
