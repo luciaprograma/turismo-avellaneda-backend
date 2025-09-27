@@ -38,5 +38,40 @@ class ExcursionController extends Controller
         }
     }
     //-------------------------------------------------------------------------------------------------
-    
+  public function showForPassenger(int $id): JsonResponse
+{
+    try {
+        $result = $this->excursionService->getExcursionDetailForPassenger($id);
+
+        if (!$result['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+                'dates' => [],
+            ], 404);
+        }
+
+        // Accede a los datos dentro de 'data'
+        $excursionData = $result['data'];
+        
+        return response()->json([
+            'success' => true,
+            'id' => $excursionData['id'],
+            'name' => $excursionData['name'],
+            'description' => $excursionData['description'],
+            'dates' => $excursionData['dates'] ?? [],
+        ], 200);
+
+    } catch (\Exception $e) {
+        Log::error('Error al obtener detalle de excursión: '.$e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener detalle de excursión',
+            'dates' => [],
+        ], 500);
+    }
+}
 }

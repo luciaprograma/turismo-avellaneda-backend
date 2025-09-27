@@ -68,4 +68,4 @@ Route::get('/health', fn () => response()->json(['ok' => true, 'time' => now()->
 
 //Excursiones pasajero
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions', [ExcursionController::class, 'indexForPassenger']);
-
+Route::middleware(['web', 'auth:sanctum'])->get('/excursions/{id}', [ExcursionController::class, 'showForPassenger']);
