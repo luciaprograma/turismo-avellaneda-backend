@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\ApiVerifyEmailController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\ResendVerifyEmailController;
-
+use App\Http\Controllers\ExcursionController;
 
 
 // -------------------- 
@@ -65,3 +65,7 @@ Route::middleware(['web', 'auth:sanctum'])->post('/profile', [ProfileController:
 
 // Health check
 Route::get('/health', fn () => response()->json(['ok' => true, 'time' => now()->toISOString()]));
+
+//Excursiones pasajero
+Route::middleware(['web', 'auth:sanctum'])->get('/excursions', [ExcursionController::class, 'indexForPassenger']);
+
