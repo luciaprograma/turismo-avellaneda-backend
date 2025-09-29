@@ -14,11 +14,10 @@ class ExcursionRepository
     {
         try {
             $query = DB::table('excursions')
-                ->select('id','name', 'description')
-                ->where('status', true)
-                ->orderBy('name', 'asc');
+            ->select('id','name','description')
+            ->orderBy('name', 'asc');
 
-            $result = $query->get();
+        $result = $query->get();
 
             return $result;
 
@@ -39,7 +38,7 @@ class ExcursionRepository
             $excursion = DB::table('excursions')
                 ->select('id', 'name', 'description')
                 ->where('id', $id)
-                ->where('status', true)
+                
                 ->first();
 
           
@@ -53,6 +52,7 @@ class ExcursionRepository
             $dates = DB::table('excursion_dates')
                 ->select('id', 'date', 'time', 'capacity', 'price')
                 ->where('excursion_id', $id)
+                ->where('status', true)
                 ->orderBy('date', 'asc')
                 ->get();
 
@@ -77,4 +77,62 @@ class ExcursionRepository
             throw $e;
         }
     }
+//--------------Inscripcion a excursiones pasajero------------------------------
+    public function registerPassengerToExcursion(int $profileId, int $excursionDateId)
+    {
+        try {
+            return DB::transaction(function () use ($profileId, $excursionDateId) {
+
+                $profile = DB::table('profiles')
+                    ->select('id', 'first_name', 'last_name', 'dni', 'birth_date', 'address', 'phone_number')
+                    ->where('id', $profileId)
+                    ->first();
+
+                if (!$profile) {
+                    return [
+                        'success' => false,
+                        'message' => 'Profile no encontrado.',
+                        'profile' => false
+                    ];
+                }
+
+                $requiredFields = ['first_name', 'last_name', 'dni', 'birth_date', 'address', 'phone_number'];
+                foreach ($requiredFields as $field) {
+                    if (empty($profile->$field)) {
+                        return [
+                            'success' => false,
+                            'profile' => false,
+                            'message' => 'Debe completar sus datos personales antes de inscribirse a la excursión.'
+                        ];
+                    }
+                }
+
+                DB::table('excursion_registrations')->insert([
+                    'profile_id' => $profile->id,
+                    'excursion_date_id' => $excursionDateId,
+                    'status' => 'registered',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+
+                return [
+                    'success' => true,
+                    'message' => 'Inscripción realizada correctamente.',
+                    'profile' => true
+                ];
+            });
+        } catch (\Exception $e) {
+            Log::error('Error en registerPassengerToExcursion: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'profile' => false,
+                'message' => 'No se pudo registrar la excursión, intente nuevamente.'
+            ];
+        }
+    }
+
+
 }

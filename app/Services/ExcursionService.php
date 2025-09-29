@@ -75,5 +75,25 @@ class ExcursionService
             ];
         }
     }
+//-----------------Inscripción de pasajero a excursión -----------------------------
+    public function registerPassengerToExcursion(int $profileId, int $excursionDateId): array
+    {
+        try {
+            
+            $result = $this->excursionRepository->registerPassengerToExcursion($profileId, $excursionDateId);
 
+                       return $result;
+        } catch (\Exception $e) {
+           
+            Log::error('Error en el Service al registrar pasajero a excursión: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+                        return [
+                'success' => false,
+                'profile' => false,
+                'message' => 'No se pudo completar la inscripción, intente nuevamente.'
+            ];
+        }
+    }
 }

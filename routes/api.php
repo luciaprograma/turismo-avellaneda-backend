@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\ResendVerifyEmailController;
 use App\Http\Controllers\ExcursionController;
+use App\Http\Controllers\UserController;
 
 
 // -------------------- 
@@ -60,8 +61,10 @@ Route::post('/email/resend', [ResendVerifyEmailController::class, 'resend'])
 // Usuario autenticado
 Route::middleware(['web', 'auth:sanctum'])->get('/user', fn (Request $request) => $request->user());
 
+
 // Profile
 Route::middleware(['web', 'auth:sanctum'])->post('/profile', [ProfileController::class, 'store']);
+
 
 // Health check
 Route::get('/health', fn () => response()->json(['ok' => true, 'time' => now()->toISOString()]));
@@ -69,3 +72,4 @@ Route::get('/health', fn () => response()->json(['ok' => true, 'time' => now()->
 //Excursiones pasajero
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions', [ExcursionController::class, 'indexForPassenger']);
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions/{id}', [ExcursionController::class, 'showForPassenger']);
+Route::middleware(['web', 'auth:sanctum'])->post('/excursions/register', [ExcursionController::class, 'registerToExcursion']);
