@@ -78,11 +78,10 @@ class AuthenticatedSessionController extends Controller
         }
 
        
-        // EMAIL NO VERIFICADO       
-       // EMAIL NO VERIFICADO       
+             
         $user = User::where('email', $email)->first();
         if ($user && ! $user->hasVerifiedEmail()) {
-            Auth::guard('web')->logout(); // por si se generó sesión
+            Auth::guard('web')->logout(); 
             return response()->json([
                 'message' => 'Tu correo no está verificado. Dirígete al panel de Verificar Correo para reenviar el link.',
                 'reason' => 'email_unverified'

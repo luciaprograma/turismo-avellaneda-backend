@@ -30,7 +30,7 @@ class ApiVerifyEmailController extends Controller
             ], 400);
         }
 
-        Log::info('Firma válida ✓');
+        Log::info('Firma válida ');
 
         $user = User::find($userId);
         if (! $user) {

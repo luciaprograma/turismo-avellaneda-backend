@@ -78,61 +78,63 @@ class ExcursionRepository
         }
     }
 //--------------Inscripcion a excursiones pasajero------------------------------
-    public function registerPassengerToExcursion(int $profileId, int $excursionDateId)
-    {
-        try {
-            return DB::transaction(function () use ($profileId, $excursionDateId) {
+   public function registerPassengerToExcursion(int $profileId, int $excursionDateId)
+{
+    try {
+        return DB::transaction(function () use ($profileId, $excursionDateId) {
 
-                $profile = DB::table('profiles')
-                    ->select('id', 'first_name', 'last_name', 'dni', 'birth_date', 'address', 'phone_number')
-                    ->where('id', $profileId)
-                    ->first();
+            $profile = DB::table('profiles')
+                ->select('id', 'first_name', 'last_name', 'dni', 'birth_date', 'address', 'phone_number')
+                ->where('id', $profileId)
+                ->first();
 
-                if (!$profile) {
-                    return [
-                        'success' => false,
-                        'message' => 'Profile no encontrado.',
-                        'profile' => false
-                    ];
+            if (!$profile) {
+                throw new \Exception('Profile no encontrado.');
+            }
+
+            $requiredFields = ['first_name', 'last_name', 'dni', 'birth_date', 'address', 'phone_number'];
+            foreach ($requiredFields as $field) {
+                if (empty($profile->$field)) {
+                    throw new \Exception('Debe completar sus datos personales antes de inscribirse a la excursión.');
                 }
+            }
 
-                $requiredFields = ['first_name', 'last_name', 'dni', 'birth_date', 'address', 'phone_number'];
-                foreach ($requiredFields as $field) {
-                    if (empty($profile->$field)) {
-                        return [
-                            'success' => false,
-                            'profile' => false,
-                            'message' => 'Debe completar sus datos personales antes de inscribirse a la excursión.'
-                        ];
-                    }
-                }
+           
+            $alreadyRegistered = DB::table('excursion_registrations')
+                ->where('profile_id', $profile->id)
+                ->where('excursion_date_id', $excursionDateId)
+                ->exists();
 
-                DB::table('excursion_registrations')->insert([
-                    'profile_id' => $profile->id,
-                    'excursion_date_id' => $excursionDateId,
-                    'status' => 'registered',
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
+            if ($alreadyRegistered) {
+                throw new \Exception('Ya está inscripto en esa fecha y horario.');
+            }
 
-                return [
-                    'success' => true,
-                    'message' => 'Inscripción realizada correctamente.',
-                    'profile' => true
-                ];
-            });
-        } catch (\Exception $e) {
-            Log::error('Error en registerPassengerToExcursion: '.$e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            DB::table('excursion_registrations')->insert([
+                'profile_id' => $profile->id,
+                'excursion_date_id' => $excursionDateId,
+                'status' => 'registered',
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
             return [
-                'success' => false,
-                'profile' => false,
-                'message' => 'No se pudo registrar la excursión, intente nuevamente.'
+                'success' => true,
+                'message' => 'Inscripción realizada correctamente.',
+                'profile' => true
             ];
-        }
+        });
+    } catch (\Exception $e) {
+        Log::error('Error en registerPassengerToExcursion: '.$e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return [
+            'success' => false,
+            'profile' => false,
+            'message' => $e->getMessage() 
+        ];
     }
+}
 
 
 }

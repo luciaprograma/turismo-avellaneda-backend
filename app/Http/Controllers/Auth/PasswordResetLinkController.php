@@ -22,17 +22,16 @@ class PasswordResetLinkController extends Controller
             $request->only('email')
         );
 
-        // Guardar en log interno aunque no exista el email
         Log::info('Password reset request', [
             'email' => $request->input('email'),
             'status' => $status,
         ]);
 
         
-    // Loguear el resultado de sendResetLink
+    
     Log::info('Password reset link status', ['status' => $status]);
-       usleep(random_int(450000, 650000)); // Retardo random 
-        // Siempre la misma respuesta externa
+       usleep(random_int(450000, 650000)); 
+        
         return response()->json([
             'status' => 'ok',
             'message' => 'Se envió un link al correo registrado.'

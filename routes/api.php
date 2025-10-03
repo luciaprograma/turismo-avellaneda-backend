@@ -11,7 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\ResendVerifyEmailController;
 use App\Http\Controllers\ExcursionController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 
 
 // -------------------- 
@@ -33,6 +33,8 @@ Route::middleware('web')->group(function () {
     Route::get('/email/verify/{id}/{hash}', [ApiVerifyEmailController::class, '__invoke'])
         ->middleware(['signed'])
         ->name('verification.verify');
+
+   
 });
 
 // -------------------- 
@@ -75,4 +77,6 @@ Route::get('/health', fn () => response()->json(['ok' => true, 'time' => now()->
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions', [ExcursionController::class, 'indexForPassenger']);
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions/{id}', [ExcursionController::class, 'showForPassenger']);
 Route::middleware(['web', 'auth:sanctum'])->post('/excursions/register', [ExcursionController::class, 'registerToExcursion']);
- 
+
+//Cambio de contraseña
+Route::middleware(['web', 'auth:sanctum'])->post('/change-password', [ChangePasswordController::class, 'update']);
