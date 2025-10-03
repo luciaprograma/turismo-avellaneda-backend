@@ -16,8 +16,12 @@ class Profile extends Model
         'dni',
         'birth_date',
         'address',
+        'phone_country_code',
+        'phone_area_code',
         'phone_number',
-        'emergency_contact',
+        'emergency_country_code',
+        'emergency_area_code',
+        'emergency_number',
     ];
 
     public function user()

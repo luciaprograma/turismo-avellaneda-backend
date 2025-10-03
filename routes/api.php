@@ -64,6 +64,8 @@ Route::middleware(['web', 'auth:sanctum'])->get('/user', fn (Request $request) =
 
 // Profile
 Route::middleware(['web', 'auth:sanctum'])->post('/profile', [ProfileController::class, 'store']);
+Route::middleware(['web', 'auth:sanctum'])->get('/profile', [ProfileController::class, 'show']);
+
 
 
 // Health check
@@ -73,3 +75,4 @@ Route::get('/health', fn () => response()->json(['ok' => true, 'time' => now()->
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions', [ExcursionController::class, 'indexForPassenger']);
 Route::middleware(['web', 'auth:sanctum'])->get('/excursions/{id}', [ExcursionController::class, 'showForPassenger']);
 Route::middleware(['web', 'auth:sanctum'])->post('/excursions/register', [ExcursionController::class, 'registerToExcursion']);
+ 

@@ -13,17 +13,25 @@ class ProfileService
         $this->profileRepository = $profileRepository;
     }
 
-    public function storeProfile(array $data, int $userId)
+    //---------------------- Ver datos del perfil ---------------------------
+    public function getProfileByUserId($userId)
     {
-       
-        // 1. si el usuario ya tiene perfil, actualizar
-      
+        return $this->profileRepository->findByUserId($userId);
+    }
+
+    //------------------------ Guardar perfil (crear o actualizar) ------------------------
+    public function storeProfile($data, $userId)
+    {
+        // Verificar si el usuario ya tiene perfil
         $profile = $this->profileRepository->findByUserId($userId);
-          // 2. si no tiene, crear uno nuevo
+
         if ($profile) {
+            // Si existe, actualizar
             return $this->profileRepository->update($profile, $data);
         }
 
-        return $this->profileRepository->create($data + ['user_id' => $userId]);
+        // Si no existe, crear nuevo perfil
+        $data['user_id'] = $userId;
+        return $this->profileRepository->create($data);
     }
 }
