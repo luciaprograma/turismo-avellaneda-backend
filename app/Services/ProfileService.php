@@ -20,18 +20,17 @@ class ProfileService
     }
 
     //------------------------ Guardar perfil (crear o actualizar) ------------------------
-    public function storeProfile($data, $userId)
-    {
-        // Verificar si el usuario ya tiene perfil
-        $profile = $this->profileRepository->findByUserId($userId);
+    public function createProfile($data, $userId) {
+    $data['user_id'] = $userId;
+    return $this->profileRepository->create($data);
+}
 
-        if ($profile) {
-            // Si existe, actualizar
-            return $this->profileRepository->update($profile, $data);
-        }
-
-        // Si no existe, crear nuevo perfil
-        $data['user_id'] = $userId;
-        return $this->profileRepository->create($data);
+public function updateProfile($data, $userId) {
+    $profile = $this->profileRepository->findByUserId($userId);
+    if (!$profile) {
+        throw new \Exception("Perfil no existe para actualizar");
     }
+    return $this->profileRepository->update($profile, $data);
+}
+
 }

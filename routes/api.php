@@ -64,9 +64,18 @@ Route::post('/email/resend', [ResendVerifyEmailController::class, 'resend'])
 Route::middleware(['web', 'auth:sanctum'])->get('/user', fn (Request $request) => $request->user());
 
 
-// Profile
-Route::middleware(['web', 'auth:sanctum'])->post('/profile', [ProfileController::class, 'store']);
-Route::middleware(['web', 'auth:sanctum'])->get('/profile', [ProfileController::class, 'show']);
+// Profile - autenticado y con cookies
+Route::middleware(['web', 'auth:sanctum'])->group(function () {
+    // Ver perfil
+    Route::get('/profile', [ProfileController::class, 'show']);
+
+    // Crear perfil
+    Route::post('/profile', [ProfileController::class, 'create']);
+
+    // Actualizar perfil
+    Route::put('/profile', [ProfileController::class, 'update']);
+});
+
 
 
 
